@@ -36,12 +36,12 @@
     },
     "autoload": {
         "psr-4": {
-            "KamiYuri\\Laravel\\XmlDB\\": "src/"
+            "KamiYuri\\Laravel\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "KamiYuri\\Laravel\\XmlDB\\Tests\\": "tests/"
+            "KamiYuri\\Laravel\\Tests\\": "tests/"
         }
     },
     "authors": [
@@ -54,10 +54,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "KamiYuri\\Laravel\\XmlDB\\ServiceProvider"
+                "KamiYuri\\Laravel\\XmlDBServiceProvider"
             ],
             "aliases": {
-                "XmlDB": "KamiYuri\\Laravel\\XmlDB\\Facades\\XmlDB"
+                "XmlDB": "KamiYuri\\Laravel\\Facades\\XmlDB"
             }
         }
     },

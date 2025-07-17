@@ -1,6 +1,8 @@
 <?php
 
-namespace Kamiyuri\Laravel\XmlDB;
+declare(strict_types=1);
+
+namespace Kamiyuri\Laravel;
 
 use Illuminate\Support\ServiceProvider;
 //use Illuminate\Database\DatabaseManager;
@@ -12,7 +14,7 @@ use Illuminate\Support\ServiceProvider;
 //use Kamiyuri\XmlDb\View\Components\XmlDebugger;
 //use Illuminate\Support\Facades\Blade;
 
-class ServiceProvider extends ServiceProvider
+class XmlDBServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
@@ -21,22 +23,22 @@ class ServiceProvider extends ServiceProvider
             __DIR__.'/../config/xmldb.php', 'xmldb'
         );
 
-        // Register database connection
-        $this->app->resolving('db', function (DatabaseManager $db) {
-            $db->extend('xmldb', function ($config, $name) {
-                $connector = new Connector();
-                return $connector->connect($config);
-            });
-        });
+        // // Register database connection
+        // $this->app->resolving('db', function (DatabaseManager $db) {
+        //     $db->extend('xmldb', function ($config, $name) {
+        //         $connector = new Connector();
+        //         return $connector->connect($config);
+        //     });
+        // });
 
-        // Register core services
-        $this->app->singleton('xmldb.file-manager', function ($app) {
-            return new Support\FileManager($app['config']['xmldb']);
-        });
+        // // Register core services
+        // $this->app->singleton('xmldb.file-manager', function ($app) {
+        //     return new Support\FileManager($app['config']['xmldb']);
+        // });
 
-        $this->app->singleton('xmldb.hierarchy-manager', function ($app) {
-            return new Support\HierarchyManager($app['config']['xmldb']);
-        });
+        // $this->app->singleton('xmldb.hierarchy-manager', function ($app) {
+        //     return new Support\HierarchyManager($app['config']['xmldb']);
+        // });
     }
 
     public function boot(): void
@@ -101,13 +103,13 @@ class ServiceProvider extends ServiceProvider
 //            'Path' => config('xmldb.connections.xmldb.path'),
 //        ]);
 
-        // Publishing file groups
-        $this->publishes([
-            __DIR__.'/../config/xmldb.php' => config_path('xmldb.php')
-        ], 'xmldb-config');
+        // // Publishing file groups
+        // $this->publishes([
+        //     __DIR__.'/../config/xmldb.php' => config_path('xmldb.php')
+        // ], 'xmldb-config');
 
-        $this->publishes([
-            __DIR__.'/../public' => public_path('vendor/xmldb')
-        ], 'xmldb-public');
+        // $this->publishes([
+        //     __DIR__.'/../public' => public_path('vendor/xmldb')
+        // ], 'xmldb-public');
     }
 }
