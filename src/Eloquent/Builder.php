@@ -1,6 +1,6 @@
 <?php
 
-namespace Kamiyuri\XmlDb\Query;
+namespace KamiYuri\Laravel\Eloquent;
 
 use Illuminate\Database\Query\Builder as BaseBuilder;
 use Saloon\XmlWrangler\XmlReader;

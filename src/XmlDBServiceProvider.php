@@ -1,115 +1,38 @@
 <?php
 
-declare(strict_types=1);
-
-namespace Kamiyuri\Laravel;
+namespace KamiYuri\Laravel;
 
 use Illuminate\Support\ServiceProvider;
-//use Illuminate\Database\DatabaseManager;
-//use Illuminate\Foundation\Console\AboutCommand;
-//use Kamiyuri\XmlDb\Console\Commands\InstallCommand;
-//use Kamiyuri\XmlDb\Console\Commands\BackupCommand;
-//use Kamiyuri\XmlDb\Console\Commands\RestoreCommand;
-//use Kamiyuri\XmlDb\Console\Commands\OptimizeCommand;
-//use Kamiyuri\XmlDb\View\Components\XmlDebugger;
-//use Illuminate\Support\Facades\Blade;
+use Illuminate\Database\DatabaseManager;
+use KamiYuri\Laravel\Database\Connection\XmlConnection;
 
 class XmlDBServiceProvider extends ServiceProvider
 {
-    public function register(): void
+    public function register()
     {
-        // Merge configuration
-        $this->mergeConfigFrom(
-            __DIR__.'/../config/xmldb.php', 'xmldb'
-        );
+        $this->app->bind('xmldb', function ($app) {
+            return new XmlConnection($app['config']['database.connections.xmldb']);
+        });
 
-        // // Register database connection
-        // $this->app->resolving('db', function (DatabaseManager $db) {
-        //     $db->extend('xmldb', function ($config, $name) {
-        //         $connector = new Connector();
-        //         return $connector->connect($config);
-        //     });
-        // });
-
-        // // Register core services
-        // $this->app->singleton('xmldb.file-manager', function ($app) {
-        //     return new Support\FileManager($app['config']['xmldb']);
-        // });
-
-        // $this->app->singleton('xmldb.hierarchy-manager', function ($app) {
-        //     return new Support\HierarchyManager($app['config']['xmldb']);
-        // });
+        $this->app->resolving('db', function (DatabaseManager $db) {
+            $db->extend('xmldb', function ($config, $name) {
+                return new XmlConnection($config, $name);
+            });
+        });
     }
 
-    public function boot(): void
+    public function boot()
     {
-        // Publish configuration
+        // Publish config file
         $this->publishes([
-            __DIR__.'/../config/xmldb.php' => config_path('xmldb.php'),
-        ], 'xmldb-config');
+            __DIR__.'/Config/xmldb.php' => config_path('xmldb.php'),
+        ], 'config');
 
-//        // Publish migrations
-//        $this->publishesMigrations([
-//            __DIR__.'/../database/migrations' => database_path('migrations'),
-//        ], 'xmldb-migrations');
-//
-//        // Load routes
-//        $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
-//
-//        // Load views
-//        $this->loadViewsFrom(__DIR__.'/../resources/views', 'xmldb');
-//
-//        // Publish views
-//        $this->publishes([
-//            __DIR__.'/../resources/views' => resource_path('views/vendor/xmldb'),
-//        ], 'xmldb-views');
-//
-//        // Load translations
-//        $this->loadTranslationsFrom(__DIR__.'/../lang', 'xmldb');
-//
-//        // Publish language files
-//        $this->publishes([
-//            __DIR__.'/../lang' => $this->app->langPath('vendor/xmldb'),
-//        ], 'xmldb-lang');
-//
-//        // Publish public assets
-//        $this->publishes([
-//            __DIR__.'/../public' => public_path('vendor/xmldb'),
-//        ], 'xmldb-assets');
-//
-//        // Register commands
-//        if ($this->app->runningInConsole()) {
-//            $this->commands([
-//                InstallCommand::class,
-//                BackupCommand::class,
-//                RestoreCommand::class,
-//                OptimizeCommand::class,
-//            ]);
-//
-//            // Register optimize commands
-//            $this->optimizes(
-//                optimize: 'xmldb:optimize',
-//                clear: 'xmldb:clear'
-//            );
-//        }
-//
-//        // Register Blade components
-//        Blade::component('xmldb-debugger', XmlDebugger::class);
-//
-//        // Add to About command
-//        AboutCommand::add('XML Database', fn () => [
-//            'Version' => '1.0.0',
-//            'Connection' => config('xmldb.default'),
-//            'Path' => config('xmldb.connections.xmldb.path'),
-//        ]);
-
-        // // Publishing file groups
-        // $this->publishes([
-        //     __DIR__.'/../config/xmldb.php' => config_path('xmldb.php')
-        // ], 'xmldb-config');
-
-        // $this->publishes([
-        //     __DIR__.'/../public' => public_path('vendor/xmldb')
-        // ], 'xmldb-public');
+        // Register commands
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                Console\Commands\XmlDBCommand::class,
+            ]);
+        }
     }
 }

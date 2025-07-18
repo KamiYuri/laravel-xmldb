@@ -1,6 +1,6 @@
 <?php
 
-namespace Kamiyuri\Laravel\Eloquent;
+namespace KamiYuri\Laravel\Eloquent;
 
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Saloon\XmlWrangler\Data\Element;

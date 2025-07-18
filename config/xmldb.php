@@ -1,25 +1,27 @@
 <?php
 
 return [
-    'default' => env('XMLDB_DEFAULT', 'default'),
+    'default' => 'local',
 
     'connections' => [
-        'default' => [
-            'driver' => 'xml',
-            'path' => storage_path('xmldb/default'),
-            'backup_path' => storage_path('xmldb/backup'),
-            'cache_path' => storage_path('xmldb/cache'),
-            'hierarchy_path' => storage_path('xmldb/hierarchy'),
+        'local' => [
+            'driver' => 'xmldb',
+            'path' => storage_path('xmldb'),
+            'extension' => '.xml',
+            'encoding' => 'UTF-8',
+            'pretty_print' => true,
+            'backup' => true,
+            'backup_path' => storage_path('xmldb/backups'),
+            'cache' => [
+                'enabled' => true,
+                'ttl' => 3600,
+            ],
         ],
     ],
 
-    'cache' => [
-        'enabled' => true,
-        'ttl' => 60, // Cache time-to-live in minutes
-    ],
-
-    'backup' => [
-        'enabled' => true,
-        'frequency' => 'daily', // Options: daily, weekly, monthly
+    'schema' => [
+        'auto_create' => true,
+        'validation' => true,
+        'namespace' => 'http://laravel-xmldb.com/schema',
     ],
 ];
