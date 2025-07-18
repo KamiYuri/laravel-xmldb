@@ -1,21 +1,25 @@
 <?php
 
-namespace Kamiyuri\Laravel;
+namespace KamiYuri\Laravel;
 
 use Illuminate\Database\Connection as BaseConnection;
+use Saloon\XmlWrangler\Exceptions\XmlReaderException;
 use Saloon\XmlWrangler\XmlReader;
 use Saloon\XmlWrangler\XmlWriter;
-use Kamiyuri\Laravel\Support\FileManager;
-use Kamiyuri\Laravel\Support\HierarchyManager;
+use KamiYuri\Laravel\Support\FileManager;
+use KamiYuri\Laravel\Support\HierarchyManager;
 
 class Connection extends BaseConnection
 {
-    protected $xmlReader;
-    protected $xmlWriter;
-    protected $fileManager;
+    protected XmlReader $xmlReader;
+    protected XmlWriter $xmlWriter;
+    protected FileManager $fileManager;
     protected $hierarchyManager;
-    protected $xmlPath;
+    protected mixed $xmlPath;
 
+    /**
+     * @throws XmlReaderException
+     */
     public function __construct(array $config)
     {
         $this->config = $config;
@@ -30,19 +34,21 @@ class Connection extends BaseConnection
         $this->useDefaultPostProcessor();
     }
 
-    protected function initializeXmlReader()
+    /**
+     * @throws XmlReaderException
+     */
+    protected function initializeXmlReader(): void
     {
-        if (file_exists($this->xmlPath)) {
-            $this->xmlReader = XmlReader::fromFile($this->xmlPath);
-        } else {
+        if (!file_exists($this->xmlPath)) {
             // Create empty XML file
             $this->fileManager->createEmptyDocument();
-            $this->xmlReader = XmlReader::fromFile($this->xmlPath);
         }
+        $this->xmlReader = XmlReader::fromFile($this->xmlPath);
     }
 
     public function select($query, $bindings = [], $useReadPdo = true)
     {
         return $this->processor->processSelect($this, $query, $bindings);
     }
+
 }
